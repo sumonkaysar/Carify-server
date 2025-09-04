@@ -1,21 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-interface IEnvVars {
-  NODE_ENV: string;
-  PORT: string;
-  DB_URL: string;
-  FRONTEND_URL: string;
-  BCRYPTJS_SALT_ROUND: string;
-  JWT_SECRET: string;
-  JWT_EXPIRES_IN: string;
-  JWT_REFRESH_SECRET: string;
-  JWT_REFRESH_EXPIRES_IN: string;
-  ADMIN_PHONE: string;
-  ADMIN_PASS: string;
-}
-
-const envVarsKeys = [
+const envFields = [
   "NODE_ENV",
   "PORT",
   "DB_URL",
@@ -27,15 +13,17 @@ const envVarsKeys = [
   "JWT_REFRESH_EXPIRES_IN",
   "ADMIN_PHONE",
   "ADMIN_PASS",
-];
+] as const;
 
-const envVars = {} as IEnvVars;
+type IEnv = Record<(typeof envFields)[number], string>;
+
+const env = {} as IEnv;
 const missingEnvs: string[] = [];
 
-envVarsKeys.forEach((key) => {
+envFields.forEach((key) => {
   const value = process.env[key];
   if (value) {
-    envVars[key as keyof IEnvVars] = value;
+    env[key as keyof IEnv] = value;
   } else {
     missingEnvs.push(key);
   }
@@ -58,4 +46,4 @@ if (missingEnvs.length > 0) {
   throw new Error(err);
 }
 
-export default envVars;
+export default env;
