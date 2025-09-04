@@ -2,19 +2,19 @@
 import { Server } from "http";
 import { connect } from "mongoose";
 import app from "./app";
-import envVars from "./app/config/env.config";
-import seedAdmin from "./app/utils/seedAdmin";
+import env from "./app/config/env.config";
+import seedAdmin from "./app/utils/seedSuperAdmin";
 
 let server: Server;
 
 const main = async () => {
   try {
-    await connect(envVars.DB_URL);
+    await connect(env.DB_URL);
 
     console.log("Connected to DB!");
 
-    server = app.listen(envVars.PORT, () => {
-      console.log(`Server is on port ${envVars.PORT}`);
+    server = app.listen(env.PORT, () => {
+      console.log(`Server is on port ${env.PORT}`);
     });
   } catch (err) {
     console.log(err);

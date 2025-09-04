@@ -1,4 +1,6 @@
+import { hash } from "bcryptjs";
 import { model, Schema } from "mongoose";
+import env from "../../config/env.config";
 import { IUser, USER_ROLE, USER_STATUS } from "./user.interface";
 
 const userSchema = new Schema<IUser>(
@@ -22,6 +24,8 @@ const userSchema = new Schema<IUser>(
     },
     password: {
       type: String,
+      required: true,
+      select: false,
     },
     phone: {
       type: String,
@@ -47,7 +51,21 @@ const userSchema = new Schema<IUser>(
       default: USER_STATUS.ACTIVE,
     },
   },
-  { timestamps: true, versionKey: false }
+  {
+    timestamps: true,
+    versionKey: false,
+  }
 );
+
+userSchema.pre("save", async function (next) {
+  if (this.isModified("password")) {
+    this.password = await hash(this.password, Number(env.BCRYPTJS_SALT_ROUND));
+  }
+  next();
+});
+
+userSchema.post("save", async function () {
+  this.set("password", "", { strict: false });
+});
 
 export const User = model<IUser>("User", userSchema);
