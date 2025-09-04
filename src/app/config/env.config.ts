@@ -11,8 +11,8 @@ const envFields = [
   "JWT_EXPIRES_IN",
   "JWT_REFRESH_SECRET",
   "JWT_REFRESH_EXPIRES_IN",
-  "ADMIN_PHONE",
-  "ADMIN_PASS",
+  "SUPER_ADMIN_EMAIL",
+  "SUPER_ADMIN_PASS",
 ] as const;
 
 type IEnv = Record<(typeof envFields)[number], string>;
