@@ -12,7 +12,7 @@ const handleZodError = (err: ZodError): TGenericErrorResponse => {
   })) as TErrorSources[];
 
   return {
-    statusCode: httpStatus.BAD_REQUEST,
+    statusCode: httpStatus.UNPROCESSABLE_ENTITY,
     message: "Zod validation error",
     errorSources: errorSources,
   };

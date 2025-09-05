@@ -7,7 +7,7 @@ const handleCastError = (
   _err: mongoose.Error.CastError
 ): TGenericErrorResponse => {
   return {
-    statusCode: httpStatus.BAD_REQUEST,
+    statusCode: httpStatus.UNPROCESSABLE_ENTITY,
     message: "Invalid MongoDB ObjectId",
   };
 };

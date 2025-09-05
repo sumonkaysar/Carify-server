@@ -4,7 +4,7 @@ import httpStatus from "../../utils/httpStatus";
 import sendResponse from "../../utils/sendResponse";
 import { AuthServices } from "./auth.service";
 
-const updateUser = catchAsync(async (req: Request, res: Response) => {
+const registerUser = catchAsync(async (req: Request, res: Response) => {
   const result = await AuthServices.registerUser(req.body);
 
   sendResponse(res, {
@@ -15,6 +15,6 @@ const updateUser = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export const UserControllers = {
-  updateUser,
+export const AuthControllers = {
+  registerUser,
 };

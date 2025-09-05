@@ -6,7 +6,7 @@ export const handleDuplicateError = (err: any): TGenericErrorResponse => {
   const match = err.message.match(/"([^"]*)"/);
   const message = `${match && match[1]} already exists`;
   return {
-    statusCode: httpStatus.BAD_REQUEST,
+    statusCode: httpStatus.UNPROCESSABLE_ENTITY,
     message,
   };
 };

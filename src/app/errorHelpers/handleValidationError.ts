@@ -16,7 +16,7 @@ const handleValidationError = (
   );
 
   return {
-    statusCode: httpStatus.BAD_REQUEST,
+    statusCode: httpStatus.UNPROCESSABLE_ENTITY,
     message: "Validation error occured",
     errorSources,
   };
