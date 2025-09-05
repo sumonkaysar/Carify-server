@@ -29,4 +29,4 @@ const orderSchema = new Schema<IOrder>(
   }
 );
 
-export const Booking = model<IOrder>("Booking", orderSchema);
+export const Order = model<IOrder>("Order", orderSchema);
