@@ -32,6 +32,9 @@ const envFields = [
   "SMTP_USER",
   "SMTP_PASS",
   "SMTP_FROM",
+  "COMPANY_NAME",
+  "COMPANY_EMAIL",
+  "COMPANY_PHONE",
 ] as const;
 
 type IEnv = Record<(typeof envFields)[number], string>;

@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Tour Booking Invoice</title>
+    <title>Car Order Invoice</title>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -51,7 +51,7 @@
   </head>
   <body>
     <div class="invoice-box">
-      <div class="title">Tour Booking Invoice</div>
+      <div class="title">Car Order Invoice</div>
 
       <table>
         <tr>
@@ -61,8 +61,8 @@
             <strong>Phone:</strong> <%= companyPhone %>
           </td>
           <td class="text-right">
-            <strong>Date:</strong> <%= new
-            Date(bookingDate).toLocaleDateString() %><br />
+            <strong>Date:</strong> <%= new Date(orderDate).toLocaleDateString()
+            %><br />
             <strong>Transaction ID:</strong> <%= transactionId %><br />
             <strong>Payment Method:</strong> SSLCommerz
           </td>
@@ -90,12 +90,12 @@
 
       <table>
         <tr class="heading">
-          <td>Tour Package</td>
+          <td>Car Package</td>
           <td class="text-right">Price</td>
         </tr>
 
         <tr class="item">
-          <td><%= tourTitle %> (x<%= guestCount %>)</td>
+          <td><%= tourTitle %></td>
           <td class="text-right">৳ <%= totalAmount %></td>
         </tr>
 
@@ -107,8 +107,8 @@
 
       <br />
       <p>
-        <strong>Note:</strong> This is a system-generated invoice for your tour
-        booking confirmation. Thank you for choosing <%= companyName %>!
+        <strong>Note:</strong> This is a system-generated invoice for your car
+        order confirmation. Thank you for choosing <%= companyName %>!
       </p>
     </div>
   </body>
