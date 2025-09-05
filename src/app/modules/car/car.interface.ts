@@ -69,5 +69,6 @@ export interface ICar {
   images: string[];
   video?: string;
   seller: Types.ObjectId;
+  deleteImages: string[];
   //   createdAt?: Date;
 }
