@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Tour Booking Invoice</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        color: #333;
+      }
+      .invoice-box {
+        max-width: 700px;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #eee;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      }
+      .invoice-box table {
+        width: 100%;
+        line-height: 24px;
+        text-align: left;
+        border-collapse: collapse;
+      }
+      .invoice-box table td {
+        padding: 8px;
+        vertical-align: top;
+      }
+      .invoice-box table tr.heading td {
+        background: #f5f5f5;
+        border-bottom: 1px solid #ddd;
+        font-weight: bold;
+      }
+      .invoice-box table tr.item td {
+        border-bottom: 1px solid #eee;
+      }
+      .invoice-box table tr.total td {
+        border-top: 2px solid #333;
+        font-weight: bold;
+      }
+      .title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #2c3e50;
+      }
+      .text-right {
+        text-align: right;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="invoice-box">
+      <div class="title">Tour Booking Invoice</div>
+
+      <table>
+        <tr>
+          <td>
+            <strong>Company:</strong> <%= companyName %><br />
+            <strong>Email:</strong> <%= companyEmail %><br />
+            <strong>Phone:</strong> <%= companyPhone %>
+          </td>
+          <td class="text-right">
+            <strong>Date:</strong> <%= new
+            Date(bookingDate).toLocaleDateString() %><br />
+            <strong>Transaction ID:</strong> <%= transactionId %><br />
+            <strong>Payment Method:</strong> SSLCommerz
+          </td>
+        </tr>
+      </table>
+
+      <br />
+
+      <table>
+        <tr class="heading">
+          <td>Customer Details</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            <strong>Name:</strong> <%= customerName %><br />
+            <strong>Email:</strong> <%= customerEmail %><br />
+            <strong>Phone:</strong> <%= customerPhone %>
+          </td>
+          <td></td>
+        </tr>
+      </table>
+
+      <br />
+
+      <table>
+        <tr class="heading">
+          <td>Tour Package</td>
+          <td class="text-right">Price</td>
+        </tr>
+
+        <tr class="item">
+          <td><%= tourTitle %> (x<%= guestCount %>)</td>
+          <td class="text-right">৳ <%= totalAmount %></td>
+        </tr>
+
+        <tr class="total">
+          <td>Total</td>
+          <td class="text-right">৳ <%= totalAmount %></td>
+        </tr>
+      </table>
+
+      <br />
+      <p>
+        <strong>Note:</strong> This is a system-generated invoice for your tour
+        booking confirmation. Thank you for choosing <%= companyName %>!
+      </p>
+    </div>
+  </body>
+</html>
