@@ -24,19 +24,19 @@ const getAllBrands = async (query: Record<string, string>) => {
 };
 
 const updateBrand = async (brandId: string, payload: Partial<IBrand>) => {
-  const isDivisionExist = await Brand.findById(brandId);
+  const isBrandExist = await Brand.findById(brandId);
 
-  if (!isDivisionExist) {
+  if (!isBrandExist) {
     throw new AppError(httpStatus.NOT_FOUND, "Brand not found");
   }
 
   if (payload.name) {
-    const duplicateDivision = await Brand.findOne({
+    const duplicateBrand = await Brand.findOne({
       name: payload.name,
       _id: brandId,
     });
 
-    if (duplicateDivision) {
+    if (duplicateBrand) {
       throw new AppError(
         httpStatus.BAD_REQUEST,
         "A brand with this name already exists"
@@ -44,22 +44,34 @@ const updateBrand = async (brandId: string, payload: Partial<IBrand>) => {
     }
   }
 
-  const updateDivision = await Brand.findByIdAndUpdate(brandId, payload, {
+  const brand = await Brand.findByIdAndUpdate(brandId, payload, {
     new: true,
     runValidators: true,
   });
 
-  if (payload.logo && isDivisionExist.logo) {
-    await deleteFromCloudinary(isDivisionExist.logo);
+  if (payload.logo && isBrandExist.logo) {
+    await deleteFromCloudinary(isBrandExist.logo);
   }
 
-  return updateDivision;
+  return brand;
 };
 
 // Car Services
+const addCar = async (payload: IBrand) => {
+  const brand = await Brand.create(payload);
+  return brand;
+};
+
+const getAllBrands = async (query: Record<string, string>) => {
+  const brands = FilterData({ DocumentModel: Brand, query });
+  return brands;
+};
 
 export const CarServices = {
+  // Brand
   createBrand,
   getAllBrands,
   updateBrand,
+  // Car
+  addCar,
 };
