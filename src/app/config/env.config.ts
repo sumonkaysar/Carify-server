@@ -27,6 +27,11 @@ const envFields = [
   "SSL_SUCCESS_FRONTEND_URL",
   "SSL_FAIL_FRONTEND_URL",
   "SSL_CANCEL_FRONTEND_URL",
+  "SMTP_HOST",
+  "SMTP_PORT",
+  "SMTP_USER",
+  "SMTP_PASS",
+  "SMTP_FROM",
 ] as const;
 
 type IEnv = Record<(typeof envFields)[number], string>;
