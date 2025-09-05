@@ -4,11 +4,7 @@ import httpStatus from "../../utils/httpStatus";
 import { IUser, USER_ROLE } from "./user.interface";
 import { User } from "./user.model";
 
-const updateUser = async (
-  userId: string,
-  payload: Partial<IUser>
-  //   decoded: JwtPayload
-) => {
+const updateUser = async (userId: string, payload: Partial<IUser>) => {
   const isUserExist = await User.findById(userId);
 
   if (!isUserExist) {
