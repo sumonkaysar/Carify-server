@@ -4,7 +4,7 @@ import FilterData from "../../utils/filterData";
 import httpStatus from "../../utils/httpStatus";
 import { User } from "../user/user.model";
 import { IBrand } from "./car.interface";
-import { Brand } from "./car.model";
+import { Brand, Car } from "./car.model";
 
 // Brand Services
 const createBrand = async (payload: IBrand) => {
@@ -58,13 +58,13 @@ const updateBrand = async (brandId: string, payload: Partial<IBrand>) => {
 
 // Car Services
 const addCar = async (payload: IBrand) => {
-  const brand = await Brand.create(payload);
+  const brand = await Car.create(payload);
   return brand;
 };
 
-const getAllBrands = async (query: Record<string, string>) => {
-  const brands = FilterData({ DocumentModel: Brand, query });
-  return brands;
+const getAllCars = async (query: Record<string, string>) => {
+  const cars = FilterData({ DocumentModel: Car, query });
+  return cars;
 };
 
 export const CarServices = {
@@ -74,4 +74,5 @@ export const CarServices = {
   updateBrand,
   // Car
   addCar,
+  getAllCars,
 };
