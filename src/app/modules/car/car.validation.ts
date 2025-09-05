@@ -23,6 +23,20 @@ export const brandZodSchema = z.object({
     .max(50, "Brand can't be more than 50 characters."),
 });
 
+export const brandUpdateZodSchema = z.object({
+  name: z
+    .string({
+      error: (issue) =>
+        issue.input === undefined
+          ? "Brand is required"
+          : "Brand must be a string",
+    })
+    .nonempty("Brand can't be blank")
+    .min(5, "Brand must be at least 5 characters long.")
+    .max(50, "Brand can't be more than 50 characters.")
+    .optional(),
+});
+
 export const carZodSchema = z.object({
   title: z
     .string({
