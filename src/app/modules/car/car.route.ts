@@ -15,9 +15,7 @@ router.post(
   validateRequest(brandZodSchema),
   CarControllers.createBrand
 );
-
 router.get("/all-brands", CarControllers.getAllBrands);
-
 router.patch(
   "/edit-brand/:brandId",
   checkAuth(USER_ROLE.ADMIN, USER_ROLE.SUPER_ADMIN),

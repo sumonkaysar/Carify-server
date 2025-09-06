@@ -1,8 +1,13 @@
 import { startSession } from "mongoose";
 import AppError from "../../errorHelpers/AppError";
+import { createTransactionId } from "../../utils/createTransactionId";
 import FilterData from "../../utils/filterData";
 import httpStatus from "../../utils/httpStatus";
 import { Car } from "../car/car.model";
+import { PAYMENT_STATUS } from "../payment/payment.interface";
+import { Payment } from "../payment/payment.model";
+import { ISslCommerz } from "../sslCommerz/sslCommerz.inteface";
+import { SslServices } from "../sslCommerz/sslCommerz.service";
 import { User } from "../user/user.model";
 import { IOrder, ORDER_STATUS } from "./order.interface";
 import { Order } from "./order.model";
@@ -37,29 +42,29 @@ const createOrder = async (payload: Partial<IOrder>, userId: string) => {
       { session }
     );
 
-    // const payment = await Payment.create(
-    //   [
-    //     {
-    //       booking: order[0]._id,
-    //       transactionId: createTransactionId(),
-    //       amount: car?.price,
-    //       status: PaymentStatus.UNPAID,
-    //     },
-    //   ],
-    //   { session }
-    // );
+    const payment = await Payment.create(
+      [
+        {
+          booking: order[0]._id,
+          transactionId: createTransactionId(),
+          amount: car?.price,
+          status: PAYMENT_STATUS.UNPAID,
+        },
+      ],
+      { session }
+    );
 
-    // order[0].payment = payment[0]._id;
-    // await order[0].save({ session });
+    order[0].payment = payment[0]._id;
+    await order[0].save({ session });
 
-    // const sslPayment = await SslServices.sslPaymentInit({
-    //   name: `${user.firstName} ${user.middleName} ${user.lastName}`,
-    //   address: user.address,
-    //   email: user.email,
-    //   phone: user.phone,
-    //   transactionId: payment[0].transactionId,
-    //   amount: payment[0].amount,
-    // } as ISslCommerz);
+    const sslPayment = await SslServices.sslPaymentInit({
+      name: `${user.firstName} ${user.middleName} ${user.lastName}`,
+      address: user.address,
+      email: user.email,
+      phone: user.phone,
+      transactionId: payment[0].transactionId,
+      amount: payment[0].amount,
+    } as ISslCommerz);
 
     const updatedBooking = await order[0].populate(
       "user car payment",
@@ -70,7 +75,7 @@ const createOrder = async (payload: Partial<IOrder>, userId: string) => {
 
     return {
       booking: updatedBooking,
-      //   paymentUrl: sslPayment.GatewayPageURL,
+      paymentUrl: sslPayment.GatewayPageURL,
     };
   } catch (error) {
     await session.abortTransaction();
@@ -81,13 +86,45 @@ const createOrder = async (payload: Partial<IOrder>, userId: string) => {
 };
 
 const getAllOrders = async (query: Record<string, string>) => {
-  const orderData = FilterData({ DocumentModel: Order, query });
-  return orderData;
+  const { data: Filtered, meta } = await FilterData({
+    DocumentModel: Order,
+    query,
+  });
+
+  const orders = await Filtered.populate(
+    "user",
+    "firstName middleName lastName email phone role"
+  )
+    .populate("car")
+    .populate("payment");
+
+  return {
+    data: orders,
+    meta,
+  };
 };
 
-const getMyOrders = async (query: Record<string, string>) => {
-  const orderData = FilterData({ DocumentModel: Order, query });
-  return orderData;
+const getMyOrders = async (userId: string, query: Record<string, string>) => {
+  // const { data, meta } = await getAllTransactions();
+  const { data: Filtered, meta } = await FilterData({
+    DocumentModel: Order,
+    query: {
+      $or: [{ sender: userId }, { receiver: userId }],
+      ...query,
+    },
+  });
+
+  const orders = await Filtered.populate(
+    "user",
+    "firstName middleName lastName email phone role"
+  )
+    .populate("car")
+    .populate("payment");
+
+  return {
+    data: orders,
+    meta,
+  };
 };
 
 const getSingleOrder = async (orderId: string) => {
