@@ -1,7 +1,12 @@
 import { startSession } from "mongoose";
+import { uploadBufferToCloudinary } from "../../config/cloudinary.config";
+import env from "../../config/env.config";
 import AppError from "../../errorHelpers/AppError";
+import { generateInvoice } from "../../utils/generateInvoice";
 import httpStatus from "../../utils/httpStatus";
-import { ORDER_STATUS } from "../order/order.interface";
+import { sendEmail } from "../../utils/sendEmail";
+import { ICar } from "../car/car.interface";
+import { IOrder, ORDER_STATUS } from "../order/order.interface";
 import { Order } from "../order/order.model";
 import { SslServices } from "../sslCommerz/sslCommerz.service";
 import { IUser } from "../user/user.interface";
@@ -34,10 +39,64 @@ const initPayment = async (orderId: string) => {
   };
 };
 
+const successCb = async (
+  transactionId: string,
+  order: IOrder,
+  amount: number
+) => {
+  const user = order.user as unknown as IUser;
+
+  const invoiceData = {
+    companyName: env.COMPANY_NAME,
+    companyEmail: env.COMPANY_EMAIL,
+    companyPhone: env.COMPANY_PHONE,
+    customerName: `${user.firstName} ${user.middleName} ${user.lastName}`,
+    customerEmail: user.email,
+    customerPhone: user.phone as string,
+    carTitle: (order.car as unknown as ICar).title,
+    orderDate: order.createdAt,
+    totalAmount: amount,
+    transactionId,
+  };
+
+  const pdfBuffer = await generateInvoice(invoiceData);
+
+  const cloudinaryResult = await uploadBufferToCloudinary(pdfBuffer, "invoice");
+
+  if (!cloudinaryResult) {
+    throw new AppError(
+      httpStatus.INTERNAL_SERVER_ERROR,
+      "Error on uploading pdf"
+    );
+  }
+
+  await Payment.findByIdAndUpdate(
+    order?.payment,
+    { invoiceUrl: cloudinaryResult.secure_url },
+    { runValidators: true }
+  );
+
+  await sendEmail({
+    to: user.email,
+    subject: "Your Order Invoice",
+    templateName: "invoice",
+    templateData: invoiceData as unknown as Record<string, string>,
+    attachments: [
+      {
+        filename: "invoice.pdf",
+        content: pdfBuffer,
+        contentType: "application/pdf",
+      },
+    ],
+  });
+};
+
 const updatePaymentStatus = async (
   transactionId: string,
   paymentStatus: string,
-  orderStatus: string
+  orderStatus: string,
+  // eslint-disable-next-line no-unused-vars
+  cb?: (transactionId: string, order: IOrder, amount: number) => Promise<void>
 ) => {
   const session = await startSession();
 
@@ -58,6 +117,10 @@ const updatePaymentStatus = async (
       .populate("car", "title")
       .populate("user", "name email phone");
 
+    if (cb) {
+      cb(transactionId, order as IOrder, payment?.amount as number);
+    }
+
     await session.commitTransaction();
 
     return {
@@ -76,54 +139,9 @@ const successPayment = async (transactionId: string) => {
   const data = await updatePaymentStatus(
     transactionId,
     PAYMENT_STATUS.PAID,
-    ORDER_STATUS.COMPLETED
+    ORDER_STATUS.COMPLETED,
+    successCb
   );
-
-  // const user = data.order?.user as unknown as IUser;
-
-  // const invoiceData = {
-  //   companyName: env.COMPANY_NAME,
-  //   companyEmail: env.COMPANY_EMAIL,
-  //   companyPhone: env.COMPANY_PHONE,
-  //   customerName: `${user.firstName} ${user.middleName} ${user.lastName}`,
-  //   customerEmail: user.email,
-  //   customerPhone: user.phone as string,
-  //   tourTitle: (data.order?.car as unknown as ICar).title,
-  //   orderDate: data.order?.createdAt as Date,
-  //   totalAmount: data.amount as number,
-  //   transactionId,
-  // };
-
-  // const pdfBuffer = await generateInvoice(invoiceData);
-
-  // const cloudinaryResult = await uploadBufferToCloudinary(pdfBuffer, "invoice");
-
-  // if (!cloudinaryResult) {
-  //   throw new AppError(
-  //     httpStatus.INTERNAL_SERVER_ERROR,
-  //     "Error on uploading pdf"
-  //   );
-  // }
-
-  // await Payment.findByIdAndUpdate(
-  //   data.order?.payment,
-  //   { invoiceUrl: cloudinaryResult.secure_url },
-  //   { runValidators: true }
-  // );
-
-  // await sendEmail({
-  //   to: user.email,
-  //   subject: "Your Booking Invoice",
-  //   templateName: "invoice",
-  //   templateData: invoiceData as unknown as Record<string, string>,
-  //   attachments: [
-  //     {
-  //       filename: "invoice.pdf",
-  //       content: pdfBuffer,
-  //       contentType: "application/pdf",
-  //     },
-  //   ],
-  // });
 
   return {
     success: true,
