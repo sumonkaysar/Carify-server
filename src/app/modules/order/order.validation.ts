@@ -34,13 +34,6 @@ export const orderZodSchema = z.object({
     })
     .nonempty("Payment ID can't be blank")
     .regex(/^[0-9a-fA-F]{24}$/, "Payment ID must be a valid MongoDB ObjectId"),
-
-  status: z
-    .enum(Object.values(ORDER_STATUS) as [string, ...string[]], {
-      error: () => ({ message: getEnumErrorMsg(ORDER_STATUS, "Status") }),
-    })
-    .optional()
-    .default(ORDER_STATUS.PENDING),
 });
 
 export const orderUpdateZodSchema = orderZodSchema.partial().extend({
