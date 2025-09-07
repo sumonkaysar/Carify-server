@@ -8,6 +8,7 @@ import { brandUpdateZodSchema, brandZodSchema } from "./car.validation";
 
 const router = Router();
 
+// Car Brand Routes
 router.post(
   "/create-brand",
   checkAuth(USER_ROLE.ADMIN, USER_ROLE.SUPER_ADMIN),
@@ -23,5 +24,22 @@ router.patch(
   validateRequest(brandUpdateZodSchema),
   CarControllers.createBrand
 );
+
+// Car Routes
+router.post(
+  "/create",
+  checkAuth(USER_ROLE.SELLER),
+  multerUpload.single("file"),
+  validateRequest(brandZodSchema),
+  CarControllers.createBrand
+);
+router.get("/all", CarControllers.getAllCars);
+// router.patch(
+//   "/edit/:carId",
+//   checkAuth(USER_ROLE.ADMIN, USER_ROLE.SUPER_ADMIN),
+//   multerUpload.single("file"),
+//   validateRequest(brandUpdateZodSchema),
+//   CarControllers.createBrand
+// );
 
 export const CarRoutes = router;

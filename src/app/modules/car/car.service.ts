@@ -71,8 +71,17 @@ const addCar = async (payload: ICar) => {
 };
 
 const getAllCars = async (query: Record<string, string>) => {
-  const cars = FilterData({ DocumentModel: Car, query });
-  return cars;
+  const { data: FilteredUser, meta } = await FilterData({
+    DocumentModel: Car,
+    query,
+  });
+
+  const cars = await FilteredUser;
+
+  return {
+    data: cars,
+    meta,
+  };
 };
 
 const updateCar = async (carId: string, payload: Partial<ICar>) => {
