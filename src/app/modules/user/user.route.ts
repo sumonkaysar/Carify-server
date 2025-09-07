@@ -11,4 +11,10 @@ router.patch(
   UserControllers.updateUser
 );
 
+router.get(
+  "/me",
+  checkAuth(),
+  UserControllers.getMe
+);
+
 export const UserRoutes = router;

@@ -12,7 +12,7 @@ export const checkValidUser = (user: IUser) => {
   }
 
   if (!user.isVerified) {
-    throw new AppError(httpStatus.UNAUTHORIZED, "User is not verified");
+    throw new AppError(httpStatus.NOT_VERIFIED, "User is not verified");
   }
 };
 

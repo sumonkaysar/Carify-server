@@ -45,7 +45,7 @@ const getAllUsers = async (query: Record<string, string>) => {
 };
 
 const getMe = async (userId: string) => {
-  const user = await User.findById(userId).populate("wallet");
+  const user = await User.findById(userId);
   return user;
 };
 

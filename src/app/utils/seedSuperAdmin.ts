@@ -3,7 +3,7 @@ import envVars from "../config/env.config";
 import { IUser, USER_ROLE, USER_STATUS } from "../modules/user/user.interface";
 import { User } from "../modules/user/user.model";
 
-const seedAdmin = async () => {
+const seedSuperAdmin = async () => {
   try {
     const isSuperAdminExist = await User.findOne({
       email: envVars.SUPER_ADMIN_EMAIL,
@@ -34,4 +34,4 @@ const seedAdmin = async () => {
   }
 };
 
-export default seedAdmin;
+export default seedSuperAdmin;

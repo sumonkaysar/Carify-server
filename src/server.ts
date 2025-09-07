@@ -3,7 +3,8 @@ import { Server } from "http";
 import { connect } from "mongoose";
 import app from "./app";
 import env from "./app/config/env.config";
-import seedAdmin from "./app/utils/seedSuperAdmin";
+import { connectRedis } from "./app/config/redis.config";
+import seedSuperAdmin from "./app/utils/seedSuperAdmin";
 
 let server: Server;
 
@@ -23,8 +24,9 @@ const main = async () => {
 };
 
 (async () => {
+  await connectRedis();
   await main();
-  await seedAdmin();
+  await seedSuperAdmin();
 })();
 
 // Unhandled Rejection Error

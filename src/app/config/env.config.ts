@@ -35,6 +35,10 @@ const envFields = [
   "COMPANY_NAME",
   "COMPANY_EMAIL",
   "COMPANY_PHONE",
+  "REDIS_HOST",
+  "REDIS_PORT",
+  "REDIS_USER",
+  "REDIS_PASS",
 ] as const;
 
 type IEnv = Record<(typeof envFields)[number], string>;

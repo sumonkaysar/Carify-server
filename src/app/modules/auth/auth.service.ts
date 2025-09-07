@@ -2,6 +2,7 @@ import { compare } from "bcryptjs";
 import { JwtPayload } from "jsonwebtoken";
 import { Document } from "mongoose";
 import AppError from "../../errorHelpers/AppError";
+import { checkValidUser } from "../../utils/checkUserValidity";
 import httpStatus from "../../utils/httpStatus";
 import { createUserTokens } from "../../utils/userTokens";
 import { IUser } from "../user/user.interface";
@@ -36,6 +37,8 @@ const credentialsLogin = async (payload: Partial<IUser>) => {
   if (!isPasswordMatched) {
     throw new AppError(httpStatus.NOT_FOUND, "Wrong credentials");
   }
+
+  checkValidUser(isUserExist);
 
   const { accessToken, refreshToken } = await createUserTokens(isUserExist);
 
