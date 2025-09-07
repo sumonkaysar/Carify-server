@@ -2,7 +2,7 @@ import z from "zod";
 import { USER_ROLE, USER_STATUS } from "../user/user.interface";
 
 export const registerZodSchema = z.object({
-  fistName: z
+  firstName: z
     .string({
       error: (issue) =>
         issue.input === undefined
@@ -12,17 +12,7 @@ export const registerZodSchema = z.object({
     .nonempty("First name can't be blank")
     .min(2, "First name must be at least 2 characters long.")
     .max(20, "First name can't be more than 20 characters."),
-  middleName: z
-    .string({
-      error: (issue) =>
-        issue.input === undefined
-          ? "Middle name is required"
-          : "Middle name must be a string",
-    })
-    .nonempty("Middle name can't be blank")
-    .min(2, "Middle name must be at least 2 characters long.")
-    .max(20, "Middle name can't be more than 20 characters.")
-    .optional(),
+  middleName: z.string("Middle name must be a string").optional(),
   lastName: z
     .string({
       error: (issue) =>
@@ -66,14 +56,12 @@ export const registerZodSchema = z.object({
     .max(200, "Address can't be more than 200 characters.")
     .optional(),
   roles: z
-    .array(
-      z.enum(
-        USER_ROLE,
-        `Role must be one of: ${Object.values(USER_ROLE).join(", ")}`
-      )
+    .enum(
+      USER_ROLE,
+      `Roles must be one of: ${Object.values(USER_ROLE).join(", ")}`
     )
     .optional()
-    .default([USER_ROLE.USER]),
+    .default(USER_ROLE.USER),
   isVerified: z
     .boolean('Is verified must be either "true" or "false"')
     .optional()

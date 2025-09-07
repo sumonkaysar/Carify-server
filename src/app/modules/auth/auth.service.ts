@@ -12,7 +12,8 @@ const registerUser = async (payload: IUser) => {
     throw new AppError(httpStatus.CONFLICT, "Email already registered");
   }
 
-  const user = await User.create(payload);
+  const user = await User.create({ ...payload, roles: [payload.roles] });
+
   return user;
 };
 
