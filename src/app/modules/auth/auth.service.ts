@@ -1,4 +1,6 @@
 import { compare } from "bcryptjs";
+import { JwtPayload } from "jsonwebtoken";
+import { Document } from "mongoose";
 import AppError from "../../errorHelpers/AppError";
 import httpStatus from "../../utils/httpStatus";
 import { createUserTokens } from "../../utils/userTokens";
@@ -19,7 +21,7 @@ const registerUser = async (payload: IUser) => {
 
 const credentialsLogin = async (payload: Partial<IUser>) => {
   const isUserExist = await User.findOne({ email: payload.email }).select(
-    "password"
+    "+password"
   );
 
   if (!isUserExist) {
@@ -44,7 +46,30 @@ const credentialsLogin = async (payload: Partial<IUser>) => {
   };
 };
 
+const changePassword = async (
+  decoded: JwtPayload,
+  newPassword: string,
+  oldPassword: string
+) => {
+  const user = (await User.findById(decoded.userId).select(
+    "+password"
+  )) as Document & IUser;
+
+  const isOldPasswordMatched = await compare(
+    oldPassword,
+    user.password as string
+  );
+
+  if (!isOldPasswordMatched) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Old password does not match");
+  }
+  user.password = newPassword;
+
+  await user.save();
+};
+
 export const AuthServices = {
   registerUser,
   credentialsLogin,
+  changePassword,
 };
