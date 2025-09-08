@@ -60,18 +60,9 @@ const CarSchema = new Schema<ICar>(
       required: true,
       trim: true,
     },
-    variant: {
-      type: String,
-      trim: true,
-    },
     year: {
       type: Number,
       required: true,
-    },
-    VIN: {
-      type: String,
-      uppercase: true,
-      trim: true,
     },
     mileage: {
       type: Number,
@@ -140,10 +131,6 @@ const CarSchema = new Schema<ICar>(
         required: true,
       },
     ],
-    video: {
-      type: String,
-      trim: true,
-    },
     seller: {
       type: Schema.Types.ObjectId,
       ref: "User",

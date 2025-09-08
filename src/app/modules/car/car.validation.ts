@@ -19,7 +19,7 @@ export const brandZodSchema = z.object({
           : "Brand must be a string",
     })
     .nonempty("Brand can't be blank")
-    .min(5, "Brand must be at least 5 characters long.")
+    .min(2, "Brand must be at least 2 characters long.")
     .max(50, "Brand can't be more than 50 characters."),
 });
 

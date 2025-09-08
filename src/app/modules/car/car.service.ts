@@ -2,6 +2,7 @@ import { deleteFromCloudinary } from "../../config/cloudinary.config";
 import AppError from "../../errorHelpers/AppError";
 import FilterData from "../../utils/filterData";
 import httpStatus from "../../utils/httpStatus";
+import { brandSearchableFields, carSearchableFields } from "./car.const";
 import { IBrand, ICar } from "./car.interface";
 import { Brand, Car } from "./car.model";
 
@@ -18,8 +19,18 @@ const createBrand = async (payload: IBrand) => {
 };
 
 const getAllBrands = async (query: Record<string, string>) => {
-  const brands = FilterData({ DocumentModel: Brand, query });
-  return brands;
+  const { data: Filtered, meta } = await FilterData({
+    DocumentModel: Brand,
+    query,
+    searchableFields: brandSearchableFields,
+  });
+
+  const brands = await Filtered;
+
+  return {
+    data: brands,
+    meta,
+  };
 };
 
 const updateBrand = async (brandId: string, payload: Partial<IBrand>) => {
@@ -57,26 +68,18 @@ const updateBrand = async (brandId: string, payload: Partial<IBrand>) => {
 
 // Car Services
 const addCar = async (payload: ICar) => {
-  const isCarExist = await Car.findOne({ VIN: payload.VIN });
-
-  if (isCarExist) {
-    throw new AppError(
-      httpStatus.CONFLICT,
-      "Car VIN(Vehicle Identification Number) already exists"
-    );
-  }
-
   const car = await Car.create(payload);
   return car;
 };
 
 const getAllCars = async (query: Record<string, string>) => {
-  const { data: FilteredUser, meta } = await FilterData({
+  const { data: Filtered, meta } = await FilterData({
     DocumentModel: Car,
     query,
+    searchableFields: carSearchableFields,
   });
 
-  const cars = await FilteredUser;
+  const cars = await Filtered;
 
   return {
     data: cars,
@@ -89,20 +92,6 @@ const updateCar = async (carId: string, payload: Partial<ICar>) => {
 
   if (!isCarExist) {
     throw new AppError(httpStatus.NOT_FOUND, "Car not found");
-  }
-
-  if (payload.VIN) {
-    const duplicateCar = await Car.findOne({
-      VIN: payload.VIN,
-      _id: { $ne: carId },
-    });
-
-    if (duplicateCar) {
-      throw new AppError(
-        httpStatus.BAD_REQUEST,
-        "A Car with this name already exists"
-      );
-    }
   }
 
   let images: string[] = isCarExist.images || [];

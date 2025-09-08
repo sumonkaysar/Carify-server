@@ -51,9 +51,7 @@ export interface ICar {
   status: CAR_STATUS;
   brand: Types.ObjectId;
   model: string;
-  variant?: string;
   year: number;
-  VIN?: string;
   mileage: number;
   mileageUnit: CAR_MILEAGE_UNIT;
   color: string;
@@ -67,7 +65,6 @@ export interface ICar {
   exteriorFeatures?: string[];
   safetyFeatures?: string[];
   images: string[];
-  video?: string;
   seller: Types.ObjectId;
   deleteImages: string[];
 }

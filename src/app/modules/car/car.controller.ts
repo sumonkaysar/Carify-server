@@ -6,7 +6,10 @@ import { CarServices } from "./car.service";
 
 // Brand Controllers
 const createBrand = catchAsync(async (req: Request, res: Response) => {
-  const result = await CarServices.createBrand(req.body);
+  const result = await CarServices.createBrand({
+    ...req.body,
+    logo: req.file?.path,
+  });
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -24,8 +27,9 @@ const getAllBrands = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Brand created succesfully",
-    data: result,
+    message: "All brands retrieved succesfully",
+    data: result.data,
+    meta: result.meta,
   });
 });
 
@@ -50,7 +54,8 @@ const getAllCars = catchAsync(async (req: Request, res: Response) => {
     statusCode: httpStatus.OK,
     success: true,
     message: "All Cars retrieved succesfully",
-    data: result,
+    data: result.data,
+    meta: result.meta,
   });
 });
 
