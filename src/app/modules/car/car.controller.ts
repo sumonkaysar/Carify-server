@@ -35,7 +35,13 @@ const getAllBrands = catchAsync(async (req: Request, res: Response) => {
 
 // Car Controllers
 const addCar = catchAsync(async (req: Request, res: Response) => {
-  const result = await CarServices.addCar(req.body);
+  const images = (req.files as Express.Multer.File[])?.map((file) => file.path);
+
+  const result = await CarServices.addCar({
+    ...req.body,
+    images,
+    seller: req.user.userId,
+  });
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
