@@ -1,5 +1,6 @@
 import { model, Schema } from "mongoose";
 import {
+  CAR_CATEGORY,
   CAR_ENGINE_TYPE,
   CAR_MILEAGE_UNIT,
   CAR_STATUS,
@@ -48,6 +49,11 @@ const CarSchema = new Schema<ICar>(
       type: String,
       enum: Object.values(CAR_STATUS),
       default: CAR_STATUS.AVAILABLE,
+    },
+    category: {
+      type: String,
+      enum: Object.values(CAR_CATEGORY),
+      required: true,
     },
     brand: {
       type: Schema.Types.ObjectId,

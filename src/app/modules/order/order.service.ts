@@ -68,7 +68,7 @@ const createOrder = async (payload: Partial<IOrder>, userId: string) => {
 
     const updatedBooking = await order[0].populate(
       "user car payment",
-      "firstName middleName, lastName email phone address title price transactionId amount status"
+      "firstName middleName lastName email phone address title price transactionId amount status"
     );
 
     await session.commitTransaction();

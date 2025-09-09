@@ -51,6 +51,17 @@ const addCar = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getSingleCar = catchAsync(async (req: Request, res: Response) => {
+  const result = await CarServices.getSingleCar(req.params.carId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Car retrieved succesfully",
+    data: result,
+  });
+});
+
 const getAllCars = catchAsync(async (req: Request, res: Response) => {
   const result = await CarServices.getAllCars(
     req.query as Record<string, string>
@@ -65,9 +76,26 @@ const getAllCars = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getSellerCars = catchAsync(async (req: Request, res: Response) => {
+  const result = await CarServices.getSellerCars(
+    req.query as Record<string, string>,
+    req.user.userId
+  );
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "All Cars retrieved succesfully",
+    data: result.data,
+    meta: result.meta,
+  });
+});
+
 export const CarControllers = {
   createBrand,
+  getSingleCar,
   getAllBrands,
   addCar,
   getAllCars,
+  getSellerCars,
 };

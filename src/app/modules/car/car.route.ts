@@ -34,6 +34,12 @@ router.post(
   CarControllers.addCar
 );
 router.get("/all", CarControllers.getAllCars);
+router.get(
+  "/seller-cars",
+  checkAuth(USER_ROLE.SELLER),
+  CarControllers.getSellerCars
+);
+router.get("/:carId", CarControllers.getSingleCar);
 // router.patch(
 //   "/edit/:carId",
 //   checkAuth(USER_ROLE.ADMIN, USER_ROLE.SUPER_ADMIN),

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import envVars from "../config/env.config";
+import { default as env, default as envVars } from "../config/env.config";
 import AppError from "../errorHelpers/AppError";
 import handleCastError from "../errorHelpers/handleCastError";
 import handleDuplicateError from "../errorHelpers/handleDuplicateError";
@@ -19,6 +19,11 @@ const globalErrorHandler = (
   let statusCode = httpStatus.INTERNAL_SERVER_ERROR;
   let message = "Something went wrong";
   let errorSources: TErrorSources[] = [];
+
+  if (env.NODE_ENV === "development") {
+    // eslint-disable-next-line no-console
+    console.log(err);
+  }
 
   if (err.code === 11000) {
     const simplifiedError = handleDuplicateError(err);

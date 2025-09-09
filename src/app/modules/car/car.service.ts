@@ -72,6 +72,19 @@ const addCar = async (payload: ICar) => {
   return car;
 };
 
+const getSingleCar = async (carId: string) => {
+  const car = await Car.findById(carId).populate(
+    "brand seller",
+    "name logo firstName middleName lastName email phone address"
+  );
+
+  if (!car) {
+    throw new AppError(httpStatus.NOT_FOUND, "Car not found");
+  }
+
+  return car;
+};
+
 const getAllCars = async (query: Record<string, string>) => {
   const { data: Filtered, meta } = await FilterData({
     DocumentModel: Car,
@@ -79,12 +92,23 @@ const getAllCars = async (query: Record<string, string>) => {
     searchableFields: carSearchableFields,
   });
 
-  const cars = await Filtered;
+  const cars = await Filtered.populate(
+    "brand seller",
+    "name logo firstName middleName lastName email phone address"
+  );
 
   return {
     data: cars,
     meta,
   };
+};
+
+const getSellerCars = async (query: Record<string, string>, seller: string) => {
+  const carsData = await getAllCars({
+    seller,
+    ...query,
+  });
+  return carsData;
 };
 
 const updateCar = async (carId: string, payload: Partial<ICar>) => {
@@ -141,6 +165,8 @@ export const CarServices = {
   updateBrand,
   // Car
   addCar,
+  getSingleCar,
   getAllCars,
+  getSellerCars,
   updateCar,
 };

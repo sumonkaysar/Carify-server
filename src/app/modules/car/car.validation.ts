@@ -1,5 +1,6 @@
 import z from "zod";
 import {
+  CAR_CATEGORY,
   CAR_ENGINE_TYPE,
   CAR_MILEAGE_UNIT,
   CAR_STATUS,
@@ -67,6 +68,11 @@ export const carZodSchema = z.object({
           : "Price must be a number",
     })
     .positive("Price must be a positive number"),
+
+  category: z.enum(
+    Object.values(CAR_CATEGORY),
+    getEnumErrorMsg(CAR_CATEGORY, "Category")
+  ),
 
   status: z
     .enum(Object.values(CAR_STATUS), getEnumErrorMsg(CAR_STATUS, "Status"))
