@@ -5,16 +5,6 @@ const getEnumErrorMsg = (enumObj: object, fieldName: string) =>
   `${fieldName} must be one of: ${Object.values(enumObj).join(", ")}`;
 
 export const orderZodSchema = z.object({
-  user: z
-    .string({
-      error: (issue) =>
-        issue.input === undefined
-          ? { message: "User ID is required" }
-          : { message: "User ID must be a string" },
-    })
-    .nonempty("User ID can't be blank")
-    .regex(/^[0-9a-fA-F]{24}$/, "User ID must be a valid MongoDB ObjectId"),
-
   car: z
     .string({
       error: (issue) =>
@@ -24,16 +14,6 @@ export const orderZodSchema = z.object({
     })
     .nonempty("Car ID can't be blank")
     .regex(/^[0-9a-fA-F]{24}$/, "Car ID must be a valid MongoDB ObjectId"),
-
-  payment: z
-    .string({
-      error: (issue) =>
-        issue.input === undefined
-          ? { message: "Payment ID is required" }
-          : { message: "Payment ID must be a string" },
-    })
-    .nonempty("Payment ID can't be blank")
-    .regex(/^[0-9a-fA-F]{24}$/, "Payment ID must be a valid MongoDB ObjectId"),
 });
 
 export const orderUpdateZodSchema = orderZodSchema.partial().extend({

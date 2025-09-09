@@ -5,13 +5,12 @@ import sendResponse from "../../utils/sendResponse";
 import { UserServices } from "./user.service";
 
 const updateUser = catchAsync(async (req: Request, res: Response) => {
-  const { id: userId } = req.params;
+  // const { id: userId } = req.params;
   //   const decoded = req.user;
-  const result = await UserServices.updateUser(
-    userId,
-    req.body
-    // decoded as JwtPayload
-  );
+  const result = await UserServices.updateUser(req.user.userId, {
+    ...req.body,
+    avatar: req.file?.path,
+  });
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
